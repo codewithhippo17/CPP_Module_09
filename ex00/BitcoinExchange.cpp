@@ -74,3 +74,31 @@ bool BitcoinExchange::isValidValue(const std::string &value) const
 
   return true;
 }
+
+void BitcoinExchange::loadDatabase(const std::string &filename)
+{
+  std::ifstream file(filename.c_str());
+
+  if (!file.is_open()) {
+    std::cerr << "Error: Could not open database file => " << filename << std::endl;
+    return;
+  }
+
+  std::string line;
+  std::getline(file, line);
+
+  while (std::getline(file, line))
+  {
+    size_t delimiter = line.find(",");
+    if (delimiter == std::string::npos)
+      continue;
+    std::string date = line.substr(0, delimiter);
+    std::string value = line.substr(delimiter + 1);
+
+    if (isValidDate(date))
+      Data[date] = std::strtod(value.c_str(), NULL);
+  }
+
+  file.close();
+}
+
