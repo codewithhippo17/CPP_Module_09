@@ -1,4 +1,5 @@
 #include "BitcoinExchange.hpp"
+#include <ctime>
 
 BitcoinExchange::BitcoinExchange() {
 }
@@ -30,14 +31,18 @@ bool BitcoinExchange::isValidDate(const std::string &date) const
       return false;
   }
 
-  int year = std::stoi(date.substr(0, 4));
-  int month = std::stoi(date.substr(5, 2));
-  int day = std::stoi(date.substr(8, 2));
+  int year = std::atoi(date.substr(0, 4).c_str());
+  int month = std::atoi(date.substr(5, 2).c_str());
+  int day = std::atoi(date.substr(8, 2).c_str());
 
-  std::tm time = {0, 0, 0, day, month - 1, year - 1900};
-  std::mktime(&time);
+  struct tm timeStruct = {};
+  timeStruct.tm_mday = day;
+  timeStruct.tm_mon = month - 1;
+  timeStruct.tm_year = year - 1900;
+  
+  mktime(&timeStruct);
 
-  if (time.tm_mday != day || time.tm_mon != month - 1 || time.tm_year != year - 1900)
+  if (timeStruct.tm_mday != day || timeStruct.tm_mon != month - 1 || timeStruct.tm_year != year - 1900)
     return false;
   if (year < 2009) 
     return false;
@@ -102,3 +107,49 @@ void BitcoinExchange::loadDatabase(const std::string &filename)
   file.close();
 }
 
+void BitcoinExchange::processInput(const std::string &filename)
+{
+  std::ifstream file(filename.c_str());
+  if (!file.is_open()) {
+    std::cerr << "Error: Could not open input file => " << filename << std::endl;
+    return;
+  }
+
+  std::string firstLine;
+  std::getline(file, firstLine);
+  if (firstLine != "date | value") {
+    std::cerr << "Error: Invalid header format. Expected 'date | value'." << std::endl;
+    return;
+  }
+
+  std::string line;
+  while (std::getline(file, line))
+  {
+    size_t delimiter = line.find(" | ");
+    if (delimiter == std::string::npos) {
+      std::cerr << "Error: bad input => " << line << std::endl;
+      continue;
+    }
+
+    std::string date = line.substr(0, delimiter);
+    std::string value = line.substr(delimiter + 3);
+    if (!isValidDate(date)) {
+      std::cerr << "Error: bad input => " << date << std::endl;
+      continue;
+    }
+    else if (!isValidValue(value))
+      continue;
+
+    std::map<std::string, float>::iterator it = Data.upper_bound(date);
+    if (it == Data.begin()) {
+      std::cerr << "Error: no exchange rate available for date => " << date << std::endl;
+      continue;
+    }
+    it--;
+    
+    float exchangeRate = it->second;
+    std::cout << date << " => " << value << " = " << exchangeRate * std::atof(value.c_str()) << std::endl;
+  }
+
+  file.close();
+}
