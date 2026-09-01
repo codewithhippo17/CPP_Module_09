@@ -146,7 +146,7 @@ void BitcoinExchange::processInput(const std::string &filename)
       continue;
     }
     it--;
-    
+
     float exchangeRate = it->second;
     std::cout << date << " => " << value << " = " << exchangeRate * std::atof(value.c_str()) << std::endl;
   }
