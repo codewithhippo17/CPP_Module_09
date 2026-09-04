@@ -9,6 +9,9 @@
 #include <utility>
 #include <stdexcept>
 #include <cstdlib>
+#include <sstream>
+#include <algorithm>
+#include <climits>
 
 class PmergeMe
 {
