@@ -44,7 +44,7 @@ bool BitcoinExchange::isValidDate(const std::string &date) const
 
   if (timeStruct.tm_mday != day || timeStruct.tm_mon != month - 1 || timeStruct.tm_year != year - 1900)
     return false;
-  if (year < 2009) 
+  if (year < 2009)
     return false;
   if (month < 1 || month > 12)
     return false;

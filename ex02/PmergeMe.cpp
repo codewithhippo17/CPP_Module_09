@@ -104,10 +104,10 @@ std::vector<int> PmergeMe::sortVector(std::vector<int> &vec)
         return vec;
     }
 
-    int oddNumber = -1;
+    int leftOver = -1;
     if (vec.size() % 2 != 0)
     {
-        oddNumber = vec.back();
+        leftOver = vec.back();
         vec.pop_back();
     }
 
@@ -132,16 +132,14 @@ std::vector<int> PmergeMe::sortVector(std::vector<int> &vec)
     std::vector<int> sortedA = PmergeMe::sortVector(winnersTmp);
 
     std::vector<int> sortedB(sortedA.size());
-    std::vector<bool> used(winners.size(), false);
 
     for (size_t i = 0; i < sortedA.size(); i++)
     {
         for (size_t j = 0; j < sortedA.size(); j++)
         {
-            if (winners[j] == sortedA[i] && !used[j])
+            if (winners[j] == sortedA[i])
             {
                 sortedB[i] = losers[j];
-                used[j] = true;
                 break;
             }
         }
@@ -158,8 +156,8 @@ std::vector<int> PmergeMe::sortVector(std::vector<int> &vec)
     for (size_t i = 0; i < sortedA.size(); i++)
         res.push_back(sortedA[i]);
 
-    if (oddNumber != -1)
-        rest.push_back(oddNumber);
+    if (leftOver != -1)
+        rest.push_back(leftOver);
 
     std::vector<int> order = generateJacobsthal(rest.size());
 
@@ -170,7 +168,7 @@ std::vector<int> PmergeMe::sortVector(std::vector<int> &vec)
 
         std::vector<int>::iterator bound;
 
-        int dec = oddNumber == -1 ? 0 : 1;
+        int dec = leftOver == -1 ? 0 : 1;
         if (idx < rest.size() - dec)
         {
             int pairedWinner = sortedA[idx + 1];
@@ -200,10 +198,10 @@ std::deque<int> PmergeMe::sortDeque(std::deque<int> &deq)
         return deq;
     }
 
-    int oddNumber = -1;
+    int leftOver = -1;
     if (deq.size() % 2 != 0)
     {
-        oddNumber = deq.back();
+        leftOver = deq.back();
         deq.pop_back();
     }
 
@@ -228,16 +226,14 @@ std::deque<int> PmergeMe::sortDeque(std::deque<int> &deq)
     std::deque<int> sortedA = PmergeMe::sortDeque(winnersTmp);
 
     std::deque<int> sortedB(sortedA.size());
-    std::vector<bool> used(winners.size(), false);
 
     for (size_t i = 0; i < sortedA.size(); i++)
     {
         for (size_t j = 0; j < sortedA.size(); j++)
         {
-            if (winners[j] == sortedA[i] && !used[j])
+            if (winners[j] == sortedA[i])
             {
                 sortedB[i] = losers[j];
-                used[j] = true;
                 break;
             }
         }
@@ -254,8 +250,8 @@ std::deque<int> PmergeMe::sortDeque(std::deque<int> &deq)
     for (size_t i = 0; i < sortedA.size(); i++)
         res.push_back(sortedA[i]);
 
-    if (oddNumber != -1)
-        rest.push_back(oddNumber);
+    if (leftOver != -1)
+        rest.push_back(leftOver);
 
     std::vector<int> order = generateJacobsthal(rest.size());
     for (size_t i = 0; i < order.size(); i++)
@@ -265,7 +261,7 @@ std::deque<int> PmergeMe::sortDeque(std::deque<int> &deq)
 
         std::deque<int>::iterator bound;
 
-        int dec = oddNumber == -1 ? 0 : 1;
+        int dec = leftOver == -1 ? 0 : 1;
         if (idx < rest.size() - dec)
         {
             int pairedWinner = sortedA[idx + 1];

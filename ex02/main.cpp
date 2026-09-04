@@ -9,12 +9,12 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  PmergeMe sorter;
+  PmergeMe sequence;
 
   try {
-    sorter.processInput(argc, argv);
-    sorter.sortData();
-    sorter.printResults(argv, argc);
+    sequence.processInput(argc, argv);
+    sequence.sortData();
+    sequence.printResults(argv, argc);
   } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl; 
     return 1;
